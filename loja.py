@@ -1,10 +1,12 @@
 from produto import Produto
 
 class Loja(object):
+    #instancia loja com nome
     def __init__(self, nome):
         self.nome = nome
         self.produtos = []
 
+    #insere produto na loja de acordo com a classe desejada (compra)
     def insereProduto(self, classe, qtd, estoque):
         for item in self.produtos:
             if classe == item.classe:
@@ -12,6 +14,7 @@ class Loja(object):
         else:
             self.produtos.append(Produto(classe, qtd, estoque))
 
+    #remove produto de acordo com a classe desejada (venda)
     def removeProduto(self, classe, qtd):
         for item in self.produtos:
             if classe == item.classe:
@@ -20,6 +23,7 @@ class Loja(object):
         else:
             return False
 
+    #checa se o estoque precisa de reposição
     def checaEstoque(self):
         for produto in self.produtos:
             if produto.getPct() >= 0.5:
