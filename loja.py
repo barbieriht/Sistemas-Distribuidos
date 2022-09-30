@@ -7,6 +7,9 @@ from paho.mqtt import client as mqtt_client
 
 import json
 
+import sub
+import pub
+
 class Loja(object):
     #instancia loja com nome
     def __init__(self, nome):
@@ -23,6 +26,8 @@ class Loja(object):
                 total = item['qtd'] + qtd
                 item['qtd'] = total
                 print(f'Adicionadas {qtd} unidades ao produto {classe}. Total: {total}')
+                with open('loja.json', 'w') as fp:
+                    json.dump(self.produtos, fp)
                 return
         self.produtos.append({'classe':classe, 'qtd':qtd, 'estoque':estoque})
 
@@ -33,7 +38,10 @@ class Loja(object):
                 if(qtd <= item['qtd']):
                     total = item['qtd'] - qtd
                     item['qtd'] = total
+                    with open('loja.json', 'w') as fp:
+                        json.dump(self.produtos, fp)
                     print(f'Removidas {qtd} unidades do produto {classe}. Total: {total}')
+                    self.checaEstoque(classe)
                     return True
                 total = item['qtd']
                 print(f'Não há unidades suficientes do produto {classe}. Total: {total} Pedido: {qtd}')
@@ -47,59 +55,28 @@ class Loja(object):
             if produto['classe'] == classe:
                 pct = produto['qtd']/produto['estoque']
                 if pct >= 0.5:
-                    #print(f'Produto {classe} em estado verde')
                     return 'verde'
                 elif pct >= 0.25:
-                    #print(f'Produto {classe} em estado amarelo')
                     return 'amarelo'
                 else:
-                    #print(f'Produto {classe} em estado vermelho')
+                    self.insereProduto(classe, produto['estoque'] - produto['qtd'])
                     return 'vermelho'
 
-    def connect_mqtt(self):
-        def on_connect(client, userdata, flags, rc):
-            if rc == 0:
-                print("Connected to MQTT Broker!")
-            else:
-                print("Failed to connect, return code %d\n", rc)
+# if __name__ == "__main__":
 
-        self.client = mqtt_client.Client(self.id)
-        self.client.username_pw_set('admin', 'hivemq')
-        self.client.on_connect = on_connect
-        self.client.connect(self.broker, self.port)
-        return self.client
+#     produtos = ['Pinga', 'Cerveja', 'Coxinha']
 
-
-    def publish(self, topic, msg):
-        result = self.client.publish(topic, msg)
-        status = result[0]
-        if status == 0:
-            print(f"Send `{msg}` to topic `{topic}`")
-        else:
-            print(f"Failed to send message to topic {topic}")
-
-    def subscribe(self, client: mqtt_client, topic):
-        def on_message(client, userdata, msg):
-            print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-
-        self.client.subscribe(topic)
-        self.client.on_message = on_message
-
-if __name__ == "__main__":
-
-    produtos = ['Pinga', 'Cerveja', 'Coxinha']
-
-    loja1 = Loja('Bar do Zé')
-    i = 0
-    while True:
-        produto = produtos[random.randint(0,2)]
-        if i == 0:
-            for x in range(0,3):
-                loja1.insereProduto(produtos[x], 50, 50)
-        loja1.removeProduto(produto, random.randint(0, 20))
-        estado = loja1.checaEstoque(produto)
-        if(estado == 'vermelho' or i == 0):
-            loja1.insereProduto(produtos[random.randint(0,2)], random.randint(20, 50), 50)
-        i += 1
-        time.sleep(3)
+#     loja1 = Loja('Bar do Zé')
+#     i = 0
+#     while True:
+#         produto = produtos[random.randint(0,2)]
+#         if i == 0:
+#             for x in range(0,3):
+#                 loja1.insereProduto(produtos[x], 50, 50)
+#         loja1.removeProduto(produto, random.randint(0, 20))
+#         estado = loja1.checaEstoque(produto)
+#         if(estado == 'vermelho' or i == 0):
+#             loja1.insereProduto(produtos[random.randint(0,2)], random.randint(20, 50), 50)
+#         i += 1
+#         time.sleep(3)
     

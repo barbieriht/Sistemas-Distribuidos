@@ -8,7 +8,6 @@ from paho.mqtt import client as mqtt_client
 
 broker = 'broker.emqx.io'
 port = 1883
-topic = "python/mqtt"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 # username = 'emqx'
@@ -22,13 +21,12 @@ def connect_mqtt():
             print("Failed to connect, return code %d\n", rc)
 
     client = mqtt_client.Client(client_id)
-    client.username_pw_set('admin', 'hivemq')
     client.on_connect = on_connect
     client.connect(broker, port)
     return client
 
 
-def publish(client):
+def publish(client, topic):
     msg_count = 0
     while True:
         time.sleep(1)
@@ -43,10 +41,10 @@ def publish(client):
         msg_count += 1
 
 
-def run():
+def run(topic):
     client = connect_mqtt()
     client.loop_start()
-    publish(client)
+    publish(client, topic)
 
 
 if __name__ == '__main__':

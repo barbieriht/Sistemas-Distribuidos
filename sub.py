@@ -7,7 +7,6 @@ from paho.mqtt import client as mqtt_client
 
 broker = 'broker.emqx.io'
 port = 1883
-topic = "python/mqtt"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 # username = 'emqx'
@@ -28,7 +27,7 @@ def connect_mqtt() -> mqtt_client:
     return client
 
 
-def subscribe(client: mqtt_client):
+def subscribe(client: mqtt_client, topic):
     def on_message(client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 
@@ -36,9 +35,9 @@ def subscribe(client: mqtt_client):
     client.on_message = on_message
 
 
-def run():
+def run(topic):
     client = connect_mqtt()
-    subscribe(client)
+    subscribe(client, topic)
     client.loop_forever()
 
 
