@@ -23,9 +23,20 @@ class Loja(object):
     def insereProduto(self, classe, qtd, estoque=0):
         for item in self.produtos:
             if classe == item['classe']:
-                pub.run('loja', str(self.id) + ';' + item['classe'] + ';' + str(item['qtd']) + ';' + str(item['estoque']), f'{qtd} {classe}s order')
-                total = item['qtd'] + qtd
-                item['qtd'] = total
+                pub.run('loja', str(self.id) + ';' + item['classe'] + ';' + str(item['qtd']) + ';' + str(item['estoque']) + '$', f'{qtd} {classe}s order')
+                sub.run('loja')
+                with open('loja.txt', 'r') as f:
+                    loja = f.read()
+                    loja = loja.split('$')
+                
+                with open('loja.txt', 'w') as f:
+                    for pedido in loja:
+                        if pedido[0] == self.id and pedido[1] == classe:
+                            total = item['qtd'] + pedido[2]
+                            item['qtd'] = total
+                            loja.remove(pedido)
+                        else:
+                            f.write(pedido[0] + ';' + pedido[1] + ';' + pedido[2] + '$')
                 print(f'Adicionadas {qtd} unidades ao produto {classe}. Total: {total}')
                 return
         self.produtos.append({'classe':classe, 'qtd':qtd, 'estoque':estoque})

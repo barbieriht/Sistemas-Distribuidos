@@ -49,17 +49,24 @@ class Fabrica(object):
         print(f'Produto {classe} não encontrado.')
         return False
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     produtos = ['Pinga', 'Cerveja', 'Coxinha']
+    produtos = ['Pinga', 'Cerveja', 'Coxinha']
 
-#     loja1 = Fabrica('Fábrica da Esquina')
-#     i = 0
-#     while True:
-#         produto = produtos[random.randint(0,2)]
-#         if i == 0:
-#             for x in range(0,3):
-#                 loja1.insereProduto(produtos[x])
-#         loja1.entregaProduto(produto, random.randint(0, 20))
-#         i += 1
-#         time.sleep(3)
+    loja1 = Fabrica('Fábrica da Esquina')
+    i = 0
+    while True:
+        produto = produtos[random.randint(0,2)]
+        if i == 0:
+            for x in range(0,3):
+                loja1.insereProduto(produtos[x])
+        sub.run('fabrica')
+        with open('fabrica.txt', 'r') as f:
+            fabrica = f.read()
+            fabrica = fabrica.split('$')
+            f.close()
+        for pedido in fabrica:
+            this = pedido.split(';')
+            pub.run('fabrica', str(this[0]) + ';' + this[1] + ';' + str(this[3] - this[2]) + '$' , f'Entregues {this[3] - this[2]} {this[0]}s para {this[0]}')
+        i += 1
+        time.sleep(3)
