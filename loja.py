@@ -25,9 +25,8 @@ class Loja(object):
             if classe == item['classe']:
                 total = item['qtd'] + qtd
                 item['qtd'] = total
+                pub.run('loja', item['classe'] + ';' + str(item['qtd']) + ';' + str(item['estoque']), f'{qtd} {classe}s order')
                 print(f'Adicionadas {qtd} unidades ao produto {classe}. Total: {total}')
-                with open('loja.json', 'w') as fp:
-                    json.dump(self.produtos, fp)
                 return
         self.produtos.append({'classe':classe, 'qtd':qtd, 'estoque':estoque})
 
@@ -38,8 +37,6 @@ class Loja(object):
                 if(qtd <= item['qtd']):
                     total = item['qtd'] - qtd
                     item['qtd'] = total
-                    with open('loja.json', 'w') as fp:
-                        json.dump(self.produtos, fp)
                     print(f'Removidas {qtd} unidades do produto {classe}. Total: {total}')
                     self.checaEstoque(classe)
                     return True
@@ -62,21 +59,20 @@ class Loja(object):
                     self.insereProduto(classe, produto['estoque'] - produto['qtd'])
                     return 'vermelho'
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     produtos = ['Pinga', 'Cerveja', 'Coxinha']
+    produtos = ['Pinga', 'Cerveja', 'Coxinha']
 
-#     loja1 = Loja('Bar do Zé')
-#     i = 0
-#     while True:
-#         produto = produtos[random.randint(0,2)]
-#         if i == 0:
-#             for x in range(0,3):
-#                 loja1.insereProduto(produtos[x], 50, 50)
-#         loja1.removeProduto(produto, random.randint(0, 20))
-#         estado = loja1.checaEstoque(produto)
-#         if(estado == 'vermelho' or i == 0):
-#             loja1.insereProduto(produtos[random.randint(0,2)], random.randint(20, 50), 50)
-#         i += 1
-#         time.sleep(3)
-    
+    loja1 = Loja('Bar do Zé')
+    i = 0
+    while True:
+        produto = produtos[random.randint(0,2)]
+        if i == 0:
+            for x in range(0,3):
+                loja1.insereProduto(produtos[x], 50, 50)
+        loja1.removeProduto(produto, random.randint(0, 20))
+        estado = loja1.checaEstoque(produto)
+        if(estado == 'vermelho' or i == 0):
+            loja1.insereProduto(produtos[random.randint(0,2)], random.randint(20, 50), 50)
+        i += 1
+        time.sleep(3)

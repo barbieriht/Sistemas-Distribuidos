@@ -9,4 +9,4 @@ import json
 import sub
 import pub
 
-sub.run('orders')
+sub.run('loja')

@@ -26,25 +26,20 @@ def connect_mqtt():
     return client
 
 
-def publish(client, topic):
-    msg_count = 0
-    while True:
-        time.sleep(1)
-        msg = f"messages: {msg_count}"
-        result = client.publish(topic, msg)
-        # result: [0, 1]
-        status = result[0]
-        if status == 0:
-            print(f"Send `{msg}` to topic `{topic}`")
-        else:
-            print(f"Failed to send message to topic {topic}")
-        msg_count += 1
+def publish(client, topic, data, msg):
+    result = client.publish(topic, data)
+    # result: [0, 1]
+    status = result[0]
+    if status == 0:
+        print(f"Send `{msg}` to topic `{topic}`")
+    else:
+        print(f"Failed to send message to topic {topic}")
 
 
-def run(topic):
+def run(topic, data, msg):
     client = connect_mqtt()
     client.loop_start()
-    publish(client, topic)
+    publish(client, topic, data, msg)
 
 
 if __name__ == '__main__':
