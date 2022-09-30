@@ -33,6 +33,7 @@ def subscribe(client: mqtt_client, topic):
 
     client.subscribe(topic)
     client.on_message = on_message
+    print(client.on_message)
 
 
 def run(topic):

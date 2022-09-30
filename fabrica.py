@@ -24,8 +24,6 @@ class Fabrica(object):
                     print(f'Produto {classe} já existe')
                     return
             self.produtos.append({'classe':classe})
-            with open('fabrica.json', 'w') as fp:
-                json.dump(self.produtos, fp)
             return
         print('Essa fábrica já tem o limite de produtos')
 

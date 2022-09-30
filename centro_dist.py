@@ -10,3 +10,4 @@ import sub
 import pub
 
 sub.run('loja')
+sub.run('fabrica')

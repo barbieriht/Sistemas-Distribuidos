@@ -23,9 +23,9 @@ class Loja(object):
     def insereProduto(self, classe, qtd, estoque=0):
         for item in self.produtos:
             if classe == item['classe']:
+                pub.run('loja', str(self.id) + ';' + item['classe'] + ';' + str(item['qtd']) + ';' + str(item['estoque']), f'{qtd} {classe}s order')
                 total = item['qtd'] + qtd
                 item['qtd'] = total
-                pub.run('loja', item['classe'] + ';' + str(item['qtd']) + ';' + str(item['estoque']), f'{qtd} {classe}s order')
                 print(f'Adicionadas {qtd} unidades ao produto {classe}. Total: {total}')
                 return
         self.produtos.append({'classe':classe, 'qtd':qtd, 'estoque':estoque})
@@ -61,18 +61,30 @@ class Loja(object):
 
 if __name__ == "__main__":
 
-    produtos = ['Pinga', 'Cerveja', 'Coxinha']
+    produtos1 = ['Pinga', 'Cerveja', 'Corote']
+    produtos2 = ['Salsicha', 'Molho', 'Batata']
 
     loja1 = Loja('Bar do Zé')
+    loja2 = Loja('Podrão da Praça')
+
     i = 0
     while True:
-        produto = produtos[random.randint(0,2)]
         if i == 0:
             for x in range(0,3):
-                loja1.insereProduto(produtos[x], 50, 50)
+                loja1.insereProduto(produtos1[x], 50, 50)
+                loja2.insereProduto(produtos2[x], 50, 50)
+
+        produto = produtos1[random.randint(0,2)]
         loja1.removeProduto(produto, random.randint(0, 20))
         estado = loja1.checaEstoque(produto)
         if(estado == 'vermelho' or i == 0):
-            loja1.insereProduto(produtos[random.randint(0,2)], random.randint(20, 50), 50)
-        i += 1
+            loja1.insereProduto(produtos1[random.randint(0,2)], random.randint(20, 50), 50)
+
+        produto = produtos2[random.randint(0,2)]
+        loja2.removeProduto(produto, random.randint(0, 20))
+        estado = loja2.checaEstoque(produto)
+        if(estado == 'vermelho' or i == 0):
+            loja2.insereProduto(produtos2[random.randint(0,2)], random.randint(20, 50), 50)
         time.sleep(3)
+        i += 1
+
