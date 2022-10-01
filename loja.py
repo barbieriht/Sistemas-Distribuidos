@@ -87,15 +87,10 @@ if __name__ == "__main__":
 
         produto = produtos1[random.randint(0,2)]
         loja1.removeProduto(produto, random.randint(0, 20))
-        estado = loja1.checaEstoque(produto)
-        if(estado == 'vermelho' or i == 0):
-            loja1.insereProduto(produtos1[random.randint(0,2)], random.randint(20, 50), 50)
 
         produto = produtos2[random.randint(0,2)]
         loja2.removeProduto(produto, random.randint(0, 20))
-        estado = loja2.checaEstoque(produto)
-        if(estado == 'vermelho' or i == 0):
-            loja2.insereProduto(produtos2[random.randint(0,2)], random.randint(20, 50), 50)
+        
         time.sleep(3)
         i += 1
 
