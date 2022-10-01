@@ -42,6 +42,7 @@ class Fabrica(object):
     def entregaProduto(self, classe, qtd):
         for item in self.produtos:
             if classe == item['classe']:
+                pub.run('loja', classe, 'entregue')
                 print(f'{qtd} {classe}s entregues.')
                 return True
         print(f'Produto {classe} não encontrado.')
