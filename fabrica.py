@@ -33,8 +33,6 @@ class Fabrica(object):
                 if classe == item['classe']:
                     self.produtos.remove(item)
                     print(f'Produto {classe} removido.')
-                    with open('fabrica.json', 'w') as fp:
-                        json.dump(self.produtos, fp)
                     return
             print(f'Produto {classe} não existe nessa fábrica.')
             return
